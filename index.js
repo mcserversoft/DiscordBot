@@ -43,17 +43,17 @@ process.on('warning', console.warn);
 bot.on("ready", async() => {
     console.log("Ready and online.")
 });
-
-bot.on("guildMemberAdd", member => {
-    if(member.guild.id == process.env.GUILDID){
-        let embed = new Discord.MessageEmbed()
-        .addField("Welcome To The MCSS Discord",`Thanks for joining the MCSS Discord Server.
-        Make sure you read the FAQ before asking questions as most questions are answered there.
-        If you cant find your answer there then be sure to ask out helpful community members`)
-        .setColor("0x7ba73f");
-        member.send(embed)
-    }
-});
+//Disabled For Now
+//bot.on("guildMemberAdd", member => {
+//    if(member.guild.id == process.env.GUILDID){
+//        let embed = new Discord.MessageEmbed()
+//        .addField("Welcome To The MCSS Discord",`Thanks for joining the MCSS Discord Server.
+//        Make sure you read the FAQ before asking questions as most questions are answered there.
+//        If you cant find your answer there then be sure to ask out helpful community members`)
+//        .setColor("0x7ba73f");
+//        member.send(embed)
+//    }
+//});
 
 bot.on("message", async message =>{
     if (message.author.bot) return;
