@@ -6,8 +6,8 @@ const fs = require("fs");
 //Create Discord Bot Varible (Unable to mention everyone)
 const bot = new Discord.Client({ disableEveryone: true });
 
-//Import .env Config
-require('dotenv').config()
+//Import .env Config (removed for final hosting)
+//require('dotenv').config()
 
 //Creates Command Collection
 bot.commands = new Discord.Collection();
