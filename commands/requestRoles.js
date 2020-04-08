@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 //require('dotenv').config()
 module.exports.run = async(bot, message, args) => {
     if(message.guild.id == process.env.GUILDID){
-        if(args[0] == "releases"){
+        if(args[0].toLowerCase() == "releases"){
             var ReleaseRole = message.guild.roles.cache.find(role => role.id == process.env.RELEASESROLEID);
             if(message.member.roles.cache.has(process.env.RELEASESROLEID)){
                 message.member.roles.remove(ReleaseRole,"BOT - Request Command").catch(console.error);
@@ -18,7 +18,7 @@ module.exports.run = async(bot, message, args) => {
                 .setColor("0x7ba73f");
                 message.channel.send(embed); 
             }
-        }else if(args[0] == "dev"){
+        }else if(args[0].toLowerCase() == "dev"){
             var DevRole = message.guild.roles.cache.find(role => role.id == process.env.DEVROLEID);
             if(message.member.roles.cache.has(process.env.DEVROLEID)){
                 message.member.roles.remove(DevRole,"BOT - Request Command").catch(console.error);
