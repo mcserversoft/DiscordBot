@@ -1,0 +1,29 @@
+{
+  "name": "mcssbot",
+  "version": "1.0.0",
+  "description": "MCSS Discord Bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcserversoft/DiscordBot.git"
+  },
+  "author": "LostAndDead/Fireblade",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mcserversoft/DiscordBot/issues"
+  },
+  "homepage": "https://github.com/mcserversoft/DiscordBot#readme",
+  "dependencies": {
+    "discord.js": "^12.1.1"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.2"
+  },
+  "engines": {
+    "node": "12.16.x"
+  }
+}
