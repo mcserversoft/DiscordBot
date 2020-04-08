@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
-require('dotenv').config()
+//Import .env Config (removed for final hosting)
+//require('dotenv').config()
 module.exports.run = async(bot, message, args) => {
     if(message.guild.id == process.env.GUILDID){
         if(args[0] == "releases"){
