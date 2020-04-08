@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 //require('dotenv').config()
 module.exports.run = async(bot, message, args) => {
     if(message.guild.id == process.env.GUILDID){
-        if(args[0].toLowerCase() == "releases"){
+        if(args[0].toLowerCase() == "release"){
             var ReleaseRole = message.guild.roles.cache.find(role => role.id == process.env.RELEASESROLEID);
             if(message.member.roles.cache.has(process.env.RELEASESROLEID)){
                 message.member.roles.remove(ReleaseRole,"BOT - Request Command").catch(console.error);
