@@ -4,10 +4,10 @@ const Discord = require("discord.js");
 const fs = require("fs");
 
 //Create Discord Bot Varible (Unable to mention everyone)
-const bot = new Discord.Client({ disableEveryone: true });
+const bot = new Discord.Client({ disableEveryone: true , partials: ['MESSAGE', 'CHANNEL', 'REACTION']});
 
 //Import .env Config (removed for final hosting)
-//require('dotenv').config()
+require('dotenv').config()
 
 //Creates Command Collection
 bot.commands = new Discord.Collection();
@@ -66,5 +66,53 @@ bot.on("message", async message =>{
         if (Commandfile) Commandfile.run(bot, message, args);
     }
 });
+
+bot.on("messageReactionAdd",(reaction,user)=>{
+    var ReleaseRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.RELEASESROLEID);
+    var DevRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.DEVROLEID);
+    var member = reaction.message.guild.members.cache.find(member => member.id == user.id)
+    if(user.bot){return};
+    if(reaction.message.id != process.env.MESSAGEID) return;
+    if(reaction.emoji.name == process.env.DEVEMOJI){
+        try{
+            member.roles.add(DevRole,"BOT - Request Command");
+        }catch(err){
+            console.log(err)
+        }
+    }
+    if(reaction.emoji.name == process.env.RELEASEEMOJI){
+        try{
+            member.roles.add(ReleaseRole,"BOT - Request Command");
+        }catch(err){
+            console.log(err)
+        }
+    }
+    
+});
+  
+  
+bot.on("messageReactionRemove",(reaction,user)=>{
+    var ReleaseRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.RELEASESROLEID);
+    var DevRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.DEVROLEID);
+    var member = reaction.message.guild.members.cache.find(member => member.id == user.id)
+    if(user.bot) return ;
+    if(reaction.message.id != process.env.MESSAGEID) return;
+    if(reaction.emoji.name == process.env.DEVEMOJI){
+        try{
+            member.roles.remove(DevRole,"BOT - Request Command");
+        }catch(err){
+            console.log(err)
+        }
+    }
+    if(reaction.emoji.name == process.env.RELEASEEMOJI){
+        try{
+            member.roles.remove(ReleaseRole,"BOT - Request Command");
+        }catch(err){
+            console.log(err)
+        }
+    }
+});
+
+
 
 bot.login(process.env.TOKEN);
