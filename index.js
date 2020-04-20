@@ -76,14 +76,14 @@ bot.on("messageReactionAdd",(reaction,user)=>{
     var member = reaction.message.guild.members.cache.find(member => member.id == user.id)
     if(user.bot){return};
     if(reaction.message.id != process.env.MESSAGEID) return;
-    if(reaction.emoji.name == process.env.RELEASEEMOJI){
+    if(reaction.emoji.name == process.env.DEVEMOJI){
         try{
             member.roles.add(DevRole,"BOT - Request Command");
         }catch(err){
             console.log(err)
         }
     }
-    if(reaction.emoji.name == process.env.DEVEMOJI){
+    if(reaction.emoji.name == process.env.RELEASEEMOJI){
         try{
             member.roles.add(ReleaseRole,"BOT - Request Command");
         }catch(err){
