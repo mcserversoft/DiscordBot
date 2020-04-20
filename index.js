@@ -7,7 +7,7 @@ const fs = require("fs");
 const bot = new Discord.Client({ disableEveryone: true , partials: ['MESSAGE', 'CHANNEL', 'REACTION']});
 
 //Import .env Config (removed for final hosting)
-require('dotenv').config()
+//require('dotenv').config()
 
 //Creates Command Collection
 bot.commands = new Discord.Collection();
