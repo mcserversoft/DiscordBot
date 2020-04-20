@@ -2,6 +2,8 @@
 const Discord = require("discord.js");
 //File System API
 const fs = require("fs");
+//Get package.json
+const pjson = require('./package.json');
 
 //Create Discord Bot Varible (Unable to mention everyone)
 const bot = new Discord.Client({ disableEveryone: true , partials: ['MESSAGE', 'CHANNEL', 'REACTION']});
@@ -42,6 +44,7 @@ process.on('warning', console.warn);
 
 bot.on("ready", async() => {
     console.log("Ready and online.")
+    console.log("MCSS-Bot Version "+pjson.version);
 });
 //Disabled For Now
 //bot.on("guildMemberAdd", member => {
