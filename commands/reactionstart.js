@@ -4,8 +4,8 @@ module.exports.run = async(bot, message, args) => {
     let embed = new Discord.MessageEmbed()
     .setTitle("Mentions For Main And Dev Releases")
     .addField("React To This Message To Get Mentioned When There Are New Releases",`
-    🦄 = Main Releases
-    🌈 = Developer Releases
+    🌈 = Main Releases
+    🦄 = Developer Releases
     `)
     .setColor("0x7ba73f");
     message.channel.send(embed).then(msg => {
