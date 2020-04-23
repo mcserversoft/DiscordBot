@@ -32,7 +32,7 @@ fs.readdir("./commands/", (err, file) => {
 // D.JS Client listeners
 bot.on("error", (e) => console.error(e));
 bot.on("warn", (e) => console.warn(e));
-bot.on('reconnecting', () => console.log('Reconnecting WS...'));
+//bot.on('reconnecting', () => console.log('Reconnecting WS...'));
 bot.on('disconnect', () => {
     console.log('Disconnected, trying to restart...');
     process.exit();
