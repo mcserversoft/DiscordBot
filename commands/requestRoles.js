@@ -2,16 +2,21 @@ const Discord = require("discord.js");
 //Import .env Config (removed for final hosting)
 //require('dotenv').config()
 module.exports.run = async(bot, message, args) => {
+    //Make sure its in the mcss server
     if(message.guild.id == process.env.GUILDID){
+        //lots of checks to check what role they want
         if(args[0].toLowerCase() == "release-news"){
             var ReleaseRole = message.guild.roles.cache.find(role => role.id == process.env.RELEASESROLEID);
+            //do they have the role?
             if(message.member.roles.cache.has(process.env.RELEASESROLEID)){
+                //remove role
                 message.member.roles.remove(ReleaseRole,"BOT - Request Command").catch(console.error);
                 let embed = new Discord.MessageEmbed()
                 .addField("Main Release Role Removed","You will no longer be mentioned when there is a new release.")
                 .setColor("0x7ba73f");
                 message.channel.send(embed);       
             }else{
+                //add role
                 message.member.roles.add(ReleaseRole,"BOT - Request Command");
                 let embed = new Discord.MessageEmbed()
                 .addField("Main Release Role Added","You will now be mentioned when there is a new release.")

@@ -58,22 +58,29 @@ bot.on("ready", async() => {
 //    }
 //});
 
+
+//Message handler
 bot.on("message", async message =>{
     if (message.author.bot) return;
     let messageArray = message.content.split(" ");
     let args = messageArray.slice();
     let cmd = messageArray[0];
     args = messageArray.slice(1);
+    //Send through commands
     if (process.env.PREFIX == cmd.slice(0, 1)) {
         let Commandfile = bot.commands.get(cmd.slice(process.env.PREFIX.length));
         if (Commandfile) Commandfile.run(bot, message, args);
     }
 });
 
+//Message Reaction system for adding roles
 bot.on("messageReactionAdd",(reaction,user)=>{
+    //get all the roles
     var ReleaseRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.RELEASESROLEID);
     var DevRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.DEVROLEID);
+    //find user as member of guild
     var member = reaction.message.guild.members.cache.find(member => member.id == user.id)
+    //Bot, message id and emoji checks
     if(user.bot){return};
     if(reaction.message.id != process.env.MESSAGEID) return;
     if(reaction.emoji.name == process.env.DEVEMOJI){
@@ -93,11 +100,14 @@ bot.on("messageReactionAdd",(reaction,user)=>{
     
 });
   
-  
+//Message Reaction system for removing roles
 bot.on("messageReactionRemove",(reaction,user)=>{
+    //get all the roles
     var ReleaseRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.RELEASESROLEID);
     var DevRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.DEVROLEID);
+    //find user as member of guild
     var member = reaction.message.guild.members.cache.find(member => member.id == user.id)
+    //Bot, message id and emoji checks
     if(user.bot) return ;
     if(reaction.message.id != process.env.MESSAGEID) return;
     if(reaction.emoji.name == process.env.DEVEMOJI){
@@ -117,5 +127,5 @@ bot.on("messageReactionRemove",(reaction,user)=>{
 });
 
 
-
+//And login...
 bot.login(process.env.TOKEN);
