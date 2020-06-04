@@ -5,7 +5,6 @@ module.exports.run = async(bot, message, args) => {
     let embed = new Discord.MessageEmbed()
     .addField("**It seems like your problem could be solved with a simple Google search.**", `[View answer to: ${args.join(" ")}](${link})`)
     .setColor("0x7ba73f");
-    message.delete();
     message.channel.send(embed);
 };
 
