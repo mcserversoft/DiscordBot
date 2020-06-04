@@ -10,6 +10,7 @@ module.exports.run = async(bot, message, args) => {
     **Owner:** <@209386978481799168>
     **Developer:** <@329353232570908682>
     **Github Code:** https://github.com/mcserversoft/DiscordBot
+    **Most Recent Change:** ${pjson.patch}
     `)
     .setColor("0x7ba73f");
     message.channel.send(embed)
