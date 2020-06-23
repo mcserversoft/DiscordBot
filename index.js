@@ -45,6 +45,7 @@ process.on('warning', console.warn);
 bot.on("ready", async() => {
     console.log("Ready and online.")
     console.log("MCSS-Bot Version "+pjson.version);
+    bot.user.setPresence({activity: {name: "People Not Read The FAQ", type: "WATCHING"}});
 });
 //Disabled For Now
 //bot.on("guildMemberAdd", member => {
