@@ -3,6 +3,8 @@ const Discord = require("discord.js");
 //Import .env Config (removed for final hosting)
 //require('dotenv').config()
 module.exports.run = async(bot, message, args) => {
+    // Disable for now
+    return;
     //check if the arg provided is a number
     if(!message.member.roles.cache.has(process.env.STAFFROLEID)){return}
     if(message.channel.type == "dm"){return}

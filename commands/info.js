@@ -6,7 +6,7 @@ module.exports.run = async(bot, message, args) => {
     .addField("Basics:", `
     **Description:** ${pjson.description}
     **Version:** ${pjson.version}
-    **Commands:** Info, Lmgt, Ping, Purge
+    **Commands:** Info, Lmgt, Ping, ~~Purge~~
     **Owner:** <@209386978481799168>
     **Developer:** <@329353232570908682>
     **Github Code:** https://github.com/mcserversoft/DiscordBot
