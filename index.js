@@ -4,29 +4,33 @@ const Discord = require("discord.js");
 const fs = require("fs");
 //Get package.json
 const pjson = require('./package.json');
+//Slash command initializer
+const init_commands = require("./init_commands")
 
-//Create Discord Bot Varible (Unable to mention everyone)
+//Create Discord Bot Variable (Unable to mention everyone)
 const bot = new Discord.Client({ disableEveryone: true , partials: ['MESSAGE', 'CHANNEL', 'REACTION']});
-
-//Import .env Config (removed for final hosting)
-//require('dotenv').config()
+//Slash commands calls
+let calls = []
 
 //Creates Command Collection
 bot.commands = new Discord.Collection();
 
-//Import Commands
+//Create calls for slash commands
 fs.readdir("./commands/", (err, file) => {
+
     if (err) console.log(err);
+
     let jsfile = file.filter(f => f.split(".").pop() === "js");
     if (jsfile.length <= 0) {
-        console.log("Cant Find Commands.");
-    return;
+        console.log("Cant Find Commands");
+        return;
     }
-    jsfile.forEach((f, i) => {
+
+    jsfile.forEach((f) => {
         let props = require(`./commands/${f}`);
-        bot.commands.set(props.help.name, props);
+        let data = props.info
+        calls.push(data)
     });
-    console.log("All commands loaded successfully");
 });
 
 // D.JS Client listeners
@@ -43,10 +47,14 @@ process.on('unhandledRejection', console.error);
 process.on('warning', console.warn);
 
 bot.on("ready", async() => {
+
+    await init_commands.sendCalls(bot, calls)
+
     console.log("Ready and online.")
     console.log("MCSS-Bot Version "+pjson.version);
-    bot.user.setPresence({activity: {name: "People Not Read The FAQ", type: "WATCHING"}});
+    await bot.user.setPresence({activity: {name: "People Not Read The FAQ", type: "WATCHING"}});
 });
+
 //Disabled For Now
 //bot.on("guildMemberAdd", member => {
 //    if(member.guild.id == process.env.GUILDID){
@@ -61,26 +69,35 @@ bot.on("ready", async() => {
 
 
 //Message handler
-bot.on("message", async message =>{
-    if (message.author.bot) return;
-    let messageArray = message.content.split(" ");
-    let args = messageArray.slice();
-    let cmd = messageArray[0];
-    args = messageArray.slice(1);
-    //Send through commands
-    if (process.env.PREFIX == cmd.slice(0, 1)) {
-        let Commandfile = bot.commands.get(cmd.slice(process.env.PREFIX.length));
-        if (Commandfile) Commandfile.run(bot, message, args);
+bot.ws.on("INTERACTION_CREATE", async interaction => {
+    const command = interaction.data.name.toLowerCase();
+    const args = interaction.data.options;
+
+    //Load all the commands
+    const info = require("./commands/info")
+    const lmgt = require("./commands/lmgt")
+    const ping = require("./commands/ping")
+
+    switch(command){
+        case "info":
+            await info.run(bot, interaction, args)
+            break;
+        case "lmgt":
+            await lmgt.run(bot, interaction, args)
+            break;
+        case "ping":
+            await ping.run(bot, interaction, args)
+            break;
     }
-});
+})
 
 //Message Reaction system for adding roles
 bot.on("messageReactionAdd",(reaction,user)=>{
     //get all the roles
-    var ReleaseRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.RELEASESROLEID);
-    var DevRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.DEVROLEID);
+    const ReleaseRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.RELEASESROLEID);
+    const DevRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.DEVROLEID);
     //find user as member of guild
-    var member = reaction.message.guild.members.cache.find(member => member.id == user.id)
+    const member = reaction.message.guild.members.cache.find(member => member.id == user.id);
     //Bot, message id and emoji checks
     if(user.bot){return};
     if(reaction.message.id != process.env.MESSAGEID) return;
@@ -104,10 +121,10 @@ bot.on("messageReactionAdd",(reaction,user)=>{
 //Message Reaction system for removing roles
 bot.on("messageReactionRemove",(reaction,user)=>{
     //get all the roles
-    var ReleaseRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.RELEASESROLEID);
-    var DevRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.DEVROLEID);
+    const ReleaseRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.RELEASESROLEID);
+    const DevRole = reaction.message.guild.roles.cache.find(role => role.id == process.env.DEVROLEID);
     //find user as member of guild
-    var member = reaction.message.guild.members.cache.find(member => member.id == user.id)
+    const member = reaction.message.guild.members.cache.find(member => member.id == user.id);
     //Bot, message id and emoji checks
     if(user.bot) return ;
     if(reaction.message.id != process.env.MESSAGEID) return;

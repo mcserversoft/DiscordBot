@@ -1,9 +1,14 @@
 const Discord = require("discord.js");
-module.exports.run = async(bot, message, args) => {
+const utils = require("../utils")
+
+module.exports.run = async(bot, interaction, args) => {
+
     //is an explanation really needed?
-    message.channel.send("Pong :ping_pong:");
+    await utils.error(bot, interaction, "Pong :ping_pong:")
+
 };
 
-module.exports.help = {
-    name: "ping"
+module.exports.info = {
+    "name": "ping",
+    "description": "Check if I am alive!"
 };
