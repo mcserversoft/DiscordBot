@@ -6,6 +6,22 @@ const fs = require("fs");
 const pjson = require('./package.json');
 //Slash command initializer
 const init_commands = require("./init_commands")
+//node fetch for http requests
+const fetch = require("node-fetch")
+//Express for empty page on heroku app
+var express = require('express');
+var app = express();
+
+//Express stuff
+var port = process.env.PORT || 8080;
+app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/public'));
+//Set the home page route
+app.get('/', function(req, res) {
+	res.render('index');
+});
+
+app.listen(port, function() {});
 
 //Create Discord Bot Variable (Unable to mention everyone)
 const bot = new Discord.Client({ disableEveryone: true , partials: ['MESSAGE', 'CHANNEL', 'REACTION']});
@@ -67,6 +83,93 @@ bot.on("ready", async() => {
 //    }
 //});
 
+bot.on("message", async message => {
+    if(message.author.bot){
+        return;
+    }
+    var urls = detectURLs(message.content)
+    if(urls != null){
+        var res = await scanLinks(urls)
+        if(res[1] == true){
+            var embed = new Discord.MessageEmbed()
+            .setTitle("Link Removed")
+            .setDescription(`
+                <@${message.author.id}>, Your message has been removed,
+
+                **This link was removed for** \`${res[0]}\`
+            `)
+            .setThumbnail("https://www.lineex.es/wp-content/uploads/2018/06/alert-icon-red-11.png")
+            .setFooter("If you believe this is a false positive please contact a staff member.", bot.user.avatarURL())
+            .setColor("0xd93d3d");
+            await message.channel.send(embed)
+            await message.delete();
+        }else if (res[2] != null){
+            var embed = new Discord.MessageEmbed()
+            .setTitle("Link Warning")
+            .setDescription(`
+                <@${message.author.id}>, A link in the your message has been identified as suspicious,
+
+                **Please proceed with caution!**
+            `)
+            .setThumbnail("https://www.lineex.es/wp-content/uploads/2018/06/alert-icon-red-11.png")
+            .setFooter("If you believe this is a false positive please contact a staff member.", bot.user.avatarURL())
+            .setColor("0xdba72e");
+            await message.channel.send(embed)
+        }
+    }
+})
+
+function detectURLs(message) {
+    var urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+    return message.match(urlRegex)
+}
+
+async function scanLinks(links){
+
+    var results = []
+
+    for(const link of links) {
+        let res = await fetch(`https://ipqualityscore.com/api/json/url/${process.env.LINKTOKEN}/${encodeURIComponent(link)}`, {
+            method: "post"
+        })
+
+        var json = await res.json()
+        results.push(json)
+    }
+
+    var reason = null
+    var doDelete = false
+    var warning = null
+
+    for(const link of results){
+
+        if(reason != null){ 
+        }else if(link.phishing == true){
+            reason = "Phishing"
+            doDelete = true
+        }else if(link.malware == true){
+            reason = "Malware"
+            doDelete = true
+        }else if(link.spamming == true){
+            reason = "Spamming"
+            doDelete = true
+        }else if(link.adult == true){
+            reason = "Adult Content"
+            doDelete = true
+        }else if(link.status_code == 0){
+            reason = "Invalid URL"
+            doDelete = true
+        }else if(link.risk_score >= 70){
+            reason = `High Risk (${link.risk_score}/100)`
+            doDelete = true
+        }else if(link.risk_score >= 25){
+            warning = link.risk_score
+        }
+    }
+
+    return [reason, doDelete, warning]
+}
+
 
 //Message handler
 bot.ws.on("INTERACTION_CREATE", async interaction => {
@@ -77,6 +180,7 @@ bot.ws.on("INTERACTION_CREATE", async interaction => {
     const info = require("./commands/info")
     const lmgt = require("./commands/lmgt")
     const ping = require("./commands/ping")
+    const faq = require("./commands/faq")
 
     switch(command){
         case "info":
@@ -87,6 +191,9 @@ bot.ws.on("INTERACTION_CREATE", async interaction => {
             break;
         case "ping":
             await ping.run(bot, interaction, args)
+            break;
+        case "faq":
+            await faq.run(bot, interaction, args)
             break;
     }
 })
@@ -117,7 +224,7 @@ bot.on("messageReactionAdd",(reaction,user)=>{
     }
     
 });
-  
+
 //Message Reaction system for removing roles
 bot.on("messageReactionRemove",(reaction,user)=>{
     //get all the roles
