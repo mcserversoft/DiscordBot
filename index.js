@@ -107,7 +107,7 @@ bot.on("message", async message => {
             var embed = new Discord.MessageEmbed()
             .setTitle("Link Warning")
             .setDescription(`
-                <@${message.author.id}>, A link in the your message has been identified as suspicious,
+                <@${message.author.id}>, A link in your message has been identified as suspicious,
 
                 **Please proceed with caution!**
             `)
