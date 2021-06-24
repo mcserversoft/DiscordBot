@@ -1,3 +1,11 @@
+/*
+ * ====================NOTE====================
+ *    This code was created by LostAndDead,
+ *   please don't claim this as your own work
+ *        https://github.com/LostAndDead
+ * ============================================
+ */
+
 //Discord API Library
 const Discord = require("discord.js");
 //File System API
@@ -11,6 +19,9 @@ const fetch = require("node-fetch")
 //Express for empty page on heroku app
 var express = require('express');
 var app = express();
+//Load custom links file
+let rawdata = fs.readFileSync('./Links.json');
+const linksList = JSON.parse(rawdata);
 
 //Express stuff
 var port = process.env.PORT || 8080;
@@ -88,6 +99,7 @@ bot.on("message", async message => {
         return;
     }
     var urls = detectURLs(message.content)
+
     if(urls != null){
         var res = await scanLinks(urls)
         if(res[1] == true){
@@ -134,7 +146,10 @@ async function scanLinks(links){
         })
 
         var json = await res.json()
-        results.push(json)
+        
+        if(!linksList.Whitelist.includes(json.domain)){
+            results.push(json)
+        }
     }
 
     var reason = null
@@ -144,6 +159,9 @@ async function scanLinks(links){
     for(const link of results){
 
         if(reason != null){ 
+        }else if (linksList.Blacklist.includes(link.domain)){
+            reason = "Blacklisted Link"
+            doDelete = true
         }else if(link.phishing == true){
             reason = "Phishing"
             doDelete = true

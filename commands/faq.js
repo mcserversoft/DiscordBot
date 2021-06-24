@@ -1,3 +1,11 @@
+/*
+ * ====================NOTE====================
+ *    This code was created by LostAndDead,
+ *   please don't claim this as your own work
+ *        https://github.com/LostAndDead
+ * ============================================
+ */
+
 const Discord = require("discord.js");
 const fs = require("fs")
 const utils = require("../utils")
