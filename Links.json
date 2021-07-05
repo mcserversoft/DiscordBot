@@ -3,6 +3,9 @@
         
     ],
     "Whitelist": [
-        "spigotmc.org"
+        "spigotmc.org",
+        "dontasktoask.com",
+        "xyproblem.info",
+        "www.nohello.com"
     ]
 }
