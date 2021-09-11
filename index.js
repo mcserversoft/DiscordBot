@@ -22,6 +22,7 @@ var app = express();
 //Load custom links file
 let rawdata = fs.readFileSync('./Links.json');
 const linksList = JSON.parse(rawdata);
+//require('dotenv').config()
 
 //Express stuff
 var port = process.env.PORT || 8080;
@@ -103,6 +104,7 @@ bot.on("message", async message => {
     if(urls != null){
         var res = await scanLinks(urls)
         if(res[1] == true){
+            console.log(`Removed ${res[3].link} by ${message.author.username}#${message.author.discriminator}`)
             var embed = new Discord.MessageEmbed()
             .setTitle("Link Removed")
             .setDescription(`
@@ -116,6 +118,7 @@ bot.on("message", async message => {
             await message.channel.send(embed)
             await message.delete();
         }else if (res[2] != null){
+            console.log(`Warned ${res[3].link} by ${message.author.username}#${message.author.discriminator}`)
             var embed = new Discord.MessageEmbed()
             .setTitle("Link Warning")
             .setDescription(`
@@ -148,6 +151,7 @@ async function scanLinks(links){
         var json = await res.json()
         
         if(!linksList.Whitelist.includes(json.domain)){
+            json.link = link
             results.push(json)
         }
     }
@@ -155,6 +159,7 @@ async function scanLinks(links){
     var reason = null
     var doDelete = false
     var warning = null
+    var flaggedLink = null
 
     for(const link of results){
 
@@ -162,30 +167,38 @@ async function scanLinks(links){
         }else if (linksList.Blacklist.includes(link.domain)){
             reason = "Blacklisted Link"
             doDelete = true
+            flaggedLink = link
         }else if(link.phishing == true){
             reason = "Phishing"
             doDelete = true
+            flaggedLink = link
         }else if(link.malware == true){
             reason = "Malware"
             doDelete = true
+            flaggedLink = link
         }else if(link.spamming == true){
             reason = "Spamming"
             doDelete = true
+            flaggedLink = link
         }else if(link.adult == true){
             reason = "Adult Content"
             doDelete = true
+            flaggedLink = link
         }else if(link.status_code == 0){
             reason = "Invalid URL"
             doDelete = true
+            flaggedLink = link
         }else if(link.risk_score >= 70){
             reason = `High Risk (${link.risk_score}/100)`
             doDelete = true
+            flaggedLink = link
         }else if(link.risk_score >= 25){
             warning = link.risk_score
+            flaggedLink = link
         }
     }
 
-    return [reason, doDelete, warning]
+    return [reason, doDelete, warning, flaggedLink]
 }
 
 
