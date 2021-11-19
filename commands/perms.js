@@ -6,7 +6,6 @@
  * ============================================
  */
 
-/* --- Done, No Further Changes Needed --- */
 const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require('discord.js')
 const { SlashCommandBuilder } = require('@discordjs/builders');
 

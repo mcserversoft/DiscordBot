@@ -11,8 +11,11 @@ const { MessageEmbed } = require('discord.js')
 const MCSS = require('../utils/MCSS API');
 
 module.exports.run = async(interaction, Config, Client) => {
+
+    //Fetch the GUID from the command
     const guid = interaction.options.getString('server')
 
+    //Check if the gui is valid (-1 is used for errors)
     if (guid == "-1"){
         interaction.reply({content: "Unable to connect to MCSS", ephemeral: true});
     }else{
@@ -21,8 +24,12 @@ module.exports.run = async(interaction, Config, Client) => {
         if(data == null){
             interaction.respond({content: "Unable to connect to MCSS", ephemeral: true});
         }else{
+
+            //Resolve some varibles to useable values
             var status = await MCSS.resolveStatus(data.Status)
             var keepOnline = await MCSS.resolveKeepOnline(data.KeepOnline)
+
+            //Create the embed
             var embed = new MessageEmbed()
             .setTitle(data.Name)
             .setColor(0x00AE86)
@@ -45,18 +52,21 @@ module.exports.run = async(interaction, Config, Client) => {
 }
 
 module.exports.autocomplete = async(interaction, Config, Client) => {
+    //Fetch minimal server info for auto complete
     var data = await MCSS.getServersMinimal();
-
     if(data == null){
+        //Api is unreachable
         interaction.respond([{name: "Unable to connect to MCSS", value: "-1"}]);
     }else{
         var servers = [];
         var value = interaction.options.getFocused(true);
+        //Perform a narrow down search on the servers to only get the ones that match the search
         await data.forEach(async (server) => {
             if(server.Name.toLowerCase().includes(value.value.toLowerCase()) || value == ""){
                 servers.push({name: server.Name, value: server.Guid});
             }
         });
+        //Give the options back to discord
         interaction.respond(servers);
     }
 }
@@ -71,6 +81,7 @@ module.exports.info = new SlashCommandBuilder()
         .setRequired(true)
     );
 
+//Temp while i wait for builder update
 module.exports.extraJSON = {
     options: [
         {

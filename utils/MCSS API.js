@@ -1,13 +1,14 @@
 const axios = require('axios');
 
+//Store a bunch of vars in the global scope
 var token = null
 var connected = false;
-var authenticated = false;
 var username = null;
 var password = null;
 var endpoint = null;
 var port = null;
 
+//Setters and authenication
 module.exports.init = async (USERNAME, PASSWORD, ENDPOINT, PORT) => {
 
     username = USERNAME;
@@ -18,26 +19,31 @@ module.exports.init = async (USERNAME, PASSWORD, ENDPOINT, PORT) => {
     await this.authenticate();
 }
 
+//Authentication
 module.exports.authenticate = async () => {
 
     await this.isConnected();
 
+    //If we are not connected, we can't authenticate
     if(!connected){
         console.log("MCSS Not Connected!");
         return;
     }
 
+    //Set the header params
     var params = new URLSearchParams();
     params.append('username', username);
     params.append('password', password);
 
     try {
+        //Send the request
         await axios.post(`http://${endpoint}:${port}/api/token`, params)
         .then(function (response) {
+            //Set the token
             token = response.data.access_token;
+            //Set the username
             username = response.data.userName;
             console.log(`Authenticated as ${username}`);
-            authenticated = true;
         })
     }catch (error){
         console.error("Authentication failed!");

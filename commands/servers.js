@@ -11,20 +11,28 @@ const { MessageEmbed } = require('discord.js')
 const MCSS = require('../utils/MCSS API');
 
 module.exports.run = async(interaction, Config, Client) => {
+
+    //Get minimal server data
     var data = await MCSS.getServersMinimal();
 
     var embed = new MessageEmbed()
     if(data == null){
+        //Api is unreachable
         embed.setTitle("Servers")
         .setColor(0x00AE86)
         .setDescription(`Unable to connect to MCSS`)
     }else{
+    
+        //Resolve some varibles to useable values
         var online = await MCSS.getServersCountOnline()
         var total = await MCSS.getServersCount()
+
+        //Create the embed
         embed.setTitle("Servers")
         .setDescription (`${online}/${total} Online`)
         .setColor(0x00AE86)
 
+        //Loop through the servers
         await data.forEach(async (server) => {
             var status = await MCSS.resolveStatus(server.Status)
             embed.addField(`${server.Name}`, 

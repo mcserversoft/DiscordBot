@@ -11,13 +11,19 @@ const { MessageEmbed } = require('discord.js')
 const MCSS = require('../utils/MCSS API');
 
 module.exports.run = async(interaction, Config, Client) => {
+
+    //Fetch the GUID from the command
     const guid = interaction.options.getString('server')
 
+    //Check if the gui is valid (-1 is used for errors)
     if (guid == "-1"){
         interaction.reply({content: "Unable to connect to MCSS", ephemeral: true});
     }else{
         var data = await MCSS.getServer(guid);
+
+        //Check the server is in a state we can restart it from
         if(data.Status == 1){
+            //Restart the server
             await MCSS.executeAction(guid, 3);
             interaction.reply({content: "Sent restart request to server.", ephemeral: true});
         }else if (data == null){
@@ -29,35 +35,21 @@ module.exports.run = async(interaction, Config, Client) => {
 }
 
 module.exports.autocomplete = async(interaction, Config, Client) => {
+    //Fetch minimal server info for auto complete
     var data = await MCSS.getServersMinimal();
-
     if(data == null){
+        //Api is unreachable
         interaction.respond([{name: "Unable to connect to MCSS", value: "-1"}]);
     }else{
         var servers = [];
         var value = interaction.options.getFocused(true);
+        //Perform a narrow down search on the servers to only get the ones that match the search
         await data.forEach(async (server) => {
             if(server.Name.toLowerCase().includes(value.value.toLowerCase()) || value == ""){
                 servers.push({name: server.Name, value: server.Guid});
             }
         });
-        interaction.respond(servers);
-    }
-}
-
-module.exports.autocomplete = async(interaction, Config, Client) => {
-    var data = await MCSS.getServersMinimal();
-
-    if(data == null){
-        interaction.respond([{name: "Unable to connect to MCSS", value: "-1"}]);
-    }else{
-        var servers = [];
-        var value = interaction.options.getFocused(true);
-        await data.forEach(async (server) => {
-            if(server.Name.toLowerCase().includes(value.value.toLowerCase()) || value == ""){
-                servers.push({name: server.Name, value: server.Guid});
-            }
-        });
+        //Give the options back to discord
         interaction.respond(servers);
     }
 }
@@ -72,6 +64,7 @@ module.exports.info = new SlashCommandBuilder()
         .setRequired(true)
     );
 
+//Temp while i wait for builder update
 module.exports.extraJSON = {
     options: [
         {

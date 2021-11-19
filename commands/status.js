@@ -11,10 +11,14 @@ const { MessageEmbed } = require('discord.js')
 const MCSS = require('../utils/MCSS API');
 
 module.exports.run = async(interaction, Config, Client) => {
+
+    //Get minimal server data
     var data = await MCSS.getVersion();
 
+    //Create the embed
     var embed = new MessageEmbed()
     if(data == null){
+        //Api is unreachable
         embed.setTitle("MCSS Status")
         .setColor(0x00AE86)
         .setDescription(`
@@ -41,11 +45,6 @@ module.exports.run = async(interaction, Config, Client) => {
 module.exports.info = new SlashCommandBuilder()
     .setName('status')
     .setDefaultPermission(true)
-    .setDescription('Get the status for the current MCSS connection')
-    .addBooleanOption(option => 
-        option.setName('full')
-        .setDescription('Show a lot more data')
-        .setRequired(false)
-    );
+    .setDescription('Get the status for the current MCSS connection');
 
 module.exports.extraJSON = {}
