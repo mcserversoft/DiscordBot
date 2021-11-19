@@ -46,11 +46,11 @@ module.exports.callButton = async(interaction, Config, Client, button) => {
         case "yes":{
             //Check if the gui is valid (-1 is used for errors)
             if (guid == "-1"){
-                interaction.reply({content: "Unable to connect to MCSS", ephemeral: true});
+                interaction.update({content: "Unable to connect to MCSS", ephemeral: true, components: []});
             }else{
                 //Kill the server
                 await MCSS.executeAction(guid, 4);
-                interaction.reply({content: "Sent kill request to server.", ephemeral: true});
+                interaction.update({content: "Sent kill request to server.", ephemeral: true, components: []});
             }
             break;
         }

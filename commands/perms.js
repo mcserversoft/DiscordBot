@@ -6,6 +6,8 @@
  * ============================================
  */
 
+
+//This manages perms for the commands, you should not need to edit this, if you do contact me on discord
 const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require('discord.js')
 const { SlashCommandBuilder } = require('@discordjs/builders');
 

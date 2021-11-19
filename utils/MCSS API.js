@@ -1,3 +1,11 @@
+/*
+ * ====================NOTE====================
+ *    This code was created by LostAndDead,
+ *   please don't claim this as your own work
+ *        https://github.com/LostAndDead
+ * ============================================
+ */
+
 const axios = require('axios');
 
 //Store a bunch of vars in the global scope
@@ -17,6 +25,10 @@ module.exports.init = async (USERNAME, PASSWORD, ENDPOINT, PORT) => {
     port = PORT;
 
     await this.authenticate();
+
+    if(connected){
+        console.log("MCSS API Initialized!");
+    }
 }
 
 //Authentication
@@ -43,7 +55,6 @@ module.exports.authenticate = async () => {
             token = response.data.access_token;
             //Set the username
             username = response.data.userName;
-            console.log(`Authenticated as ${username}`);
         })
     }catch (error){
         console.error("Authentication failed!");
@@ -54,21 +65,28 @@ module.exports.authenticate = async () => {
 
 module.exports.isConnected = async () => {
 
+    var state = null;
+
     try{
         await axios.get(`http://${endpoint}:${port}/mcss`, {})
         .then(function (response) {
             if(response.data = "MCSS API says hello!"){
-                connected = true;
+                state = true;
             }else{
-                connected = false;
+                state = false;
             }
         })
     }catch (error){
         console.error("MCSS Not Connected!");
-        connected = false;
+        state = false;
     }
 
-    return connected;
+    if(state && !connected){
+        connected = state;
+        await this.authenticate();
+    }
+    
+    return state;
 }
 
 module.exports.getVersion = async () => {
