@@ -1,0 +1,28 @@
+{
+  "name": "discordbot",
+  "version": "1.0.0",
+  "description": "Self hostable Discord bot for interacting with the mcss api",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcserversoft/DiscordBot.git"
+  },
+  "keywords": [
+    "Discord",
+    "Bot",
+    "MCSS"
+  ],
+  "author": "LostAndDead",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mcserversoft/DiscordBot/issues"
+  },
+  "homepage": "https://github.com/mcserversoft/DiscordBot#readme",
+  "dependencies": {
+    "@discordjs/builders": "^0.8.2",
+    "discord.js": "^13.3.1"
+  }
+}
