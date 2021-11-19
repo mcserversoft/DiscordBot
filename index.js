@@ -136,7 +136,7 @@ client.on('interactionCreate', async interaction => {
 		await command.callButton(interaction, Config, client);
 	} catch (error) {
 		console.error(error);
-		if (!interaction.deferred()){
+		if (!interaction.deferred){
             await interaction.deferReply()
         }
         await interaction.editReply('There was an error while executing this command!');
