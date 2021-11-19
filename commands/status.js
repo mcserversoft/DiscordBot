@@ -9,6 +9,7 @@
 const { SlashCommandBuilder} = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js')
 const MCSS = require('../utils/MCSS API');
+const commons = require('../utils/commons');
 
 module.exports.run = async(interaction, Config, Client) => {
 
@@ -19,14 +20,7 @@ module.exports.run = async(interaction, Config, Client) => {
     var embed = new MessageEmbed()
     if(data == null){
         //Api is unreachable
-        embed.setTitle("MCSS Status")
-        .setColor(0x00AE86)
-        .setDescription(`
-        **Connected**: 🔴
-        **Version**: \`N/A\`
-        **API Version**: \`N/A\`
-        **Is Dev Build?**: \`N/A\`
-        `)
+        commons.error(interaction, "Unable to connect to MCSS");
     }else{
         embed.setTitle("MCSS Status")
         .setColor(0x00AE86)

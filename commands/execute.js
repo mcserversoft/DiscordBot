@@ -12,7 +12,12 @@ const MCSS = require('../utils/MCSS API');
 const commons = require('../utils/commons');
 
 module.exports.run = async(interaction, Config, Client) => {
+
+    //Get the server guid
     const guid = interaction.options.getString('server')
+
+    //Get the command
+    const command = interaction.options.getString('command')
 
     //Check if the gui is valid (-1 is used for errors)
     if (guid == "-1"){
@@ -20,15 +25,19 @@ module.exports.run = async(interaction, Config, Client) => {
     }else{
         var data = await MCSS.getServer(guid);
 
-        //Check the server is in a state we can restart it from
-        if(data.Status == 0){
-            //Start the server
-            await MCSS.executeAction(guid, 1);
-            commons.success(interaction, `🟢    Started ${data.Name}    🟢`);
+        //Check the server is in a state we can run commands from
+        if(data.Status == 1){
+            //Run the command
+            await MCSS.executeCommand(guid, command);
+            var embed = new MessageEmbed()
+                .setColor(0x00AE86)
+                .setTitle(`🔧    Command executed on ${data.Name}    🔧`)
+                .setDescription(`\`${command}\``)
+            interaction.reply({embeds: [embed], ephemeral: true});
         }else if (data == null){
             commons.error(interaction, "Unable to connect to MCSS");
         }else{
-            commons.error(interaction, "Server is not offline therefore can not be started");
+            commons.error(interaction, "Server is not online therefore commands can not be ran");
         }
     }
 }
@@ -38,12 +47,17 @@ module.exports.autocomplete = async(interaction, Config, Client) => {
 }
 
 module.exports.info = new SlashCommandBuilder()
-    .setName('start')
+    .setName('execute')
     .setDefaultPermission(false)
-    .setDescription('Start a server')
+    .setDescription('Execute a command on a server')
     .addStringOption(option => 
         option.setName('server')
-        .setDescription('The server to start')
+        .setDescription('The server to run the command on')
+        .setRequired(true)
+    )
+    .addStringOption(option => 
+        option.setName('command')
+        .setDescription('The command to run')
         .setRequired(true)
     );
 
@@ -53,9 +67,15 @@ module.exports.extraJSON = {
         {
             type: 3,
             name: 'server',
-            description: 'The server to start',
+            description: 'The server to run the command on',
             required: true,
             autocomplete: true
+        },
+        {
+            type: 3,
+            name: 'command',
+            description: 'The command to run',
+            required: true,
         }
     ]
 }

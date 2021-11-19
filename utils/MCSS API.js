@@ -224,6 +224,36 @@ module.exports.executeAction = async (guid, action) => {
     return data;
 }
 
+module.exports.executeCommand = async (guid, command) => {
+    await this.isConnected();
+
+    if(!connected){
+        return null;
+    }
+
+    var data = null
+
+    try {
+        await axios({
+            method: 'post',
+            url: `http://${endpoint}:${port}/api/server/execute/command`,
+            headers: { Authorization: `Bearer ${token}` },
+            data : {
+                "Guid": guid,
+                "Command": command
+            }
+        })
+        .then(function (response) {
+            data = response.data;
+        })
+    }catch (error){
+        console.log(error);
+        return null;
+    }
+
+    return data;
+}
+
 module.exports.getServersCount = async () => {
     await this.isConnected();
 

@@ -9,6 +9,7 @@
 const { SlashCommandBuilder} = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js')
 const MCSS = require('../utils/MCSS API');
+const commons = require('../utils/commons');
 
 module.exports.run = async(interaction, Config, Client) => {
 
@@ -17,12 +18,12 @@ module.exports.run = async(interaction, Config, Client) => {
 
     //Check if the gui is valid (-1 is used for errors)
     if (guid == "-1"){
-        interaction.reply({content: "Unable to connect to MCSS", ephemeral: true});
+        commons.error(interaction, "Unable to connect to MCSS");
     }else{
         var data = await MCSS.getServer(guid);
 
         if(data == null){
-            interaction.respond({content: "Unable to connect to MCSS", ephemeral: true});
+            commons.error(interaction, "Unable to connect to MCSS");
         }else{
 
             //Resolve some varibles to useable values
@@ -35,7 +36,7 @@ module.exports.run = async(interaction, Config, Client) => {
             .setColor(0x00AE86)
             .setDescription(`
             **Guid**: \`${data.Guid}\`
-            **Status**: ${status.Emoji}
+            **Status**: \`${status.Message}\` ${status.Emoji}
             **Description**: \`${data.Description}\`
             **Path To Folder**: \`${data.PathToFolder}\`
             **Folder Name**: \`${data.FolderName}\`
@@ -56,7 +57,7 @@ module.exports.autocomplete = async(interaction, Config, Client) => {
     var data = await MCSS.getServersMinimal();
     if(data == null){
         //Api is unreachable
-        interaction.respond([{name: "Unable to connect to MCSS", value: "-1"}]);
+        commons.error(interaction, "Unable to connect to MCSS");
     }else{
         var servers = [];
         var value = interaction.options.getFocused(true);

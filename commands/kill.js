@@ -9,6 +9,7 @@
 const { SlashCommandBuilder} = require('@discordjs/builders');
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js')
 const MCSS = require('../utils/MCSS API');
+const commons = require('../utils/commons');
 
 module.exports.run = async(interaction, Config, Client) => {
 
@@ -46,40 +47,25 @@ module.exports.callButton = async(interaction, Config, Client, button) => {
         case "yes":{
             //Check if the gui is valid (-1 is used for errors)
             if (guid == "-1"){
-                interaction.update({content: "Unable to connect to MCSS", ephemeral: true, components: []});
+                commons.error(interaction, "Unable to connect to MCSS");
             }else{
                 //Kill the server
+                var data = await MCSS.getServer(guid);
                 await MCSS.executeAction(guid, 4);
-                interaction.update({content: "Sent kill request to server.", ephemeral: true, components: []});
+                commons.success(interaction, `💀    Killed ${data.Name}    💀`);
             }
             break;
         }
         case "no":{
             //They chickened out, just send a message
-            interaction.update({content: 'Kill action denied', components: []})
+            commons.info(interaction, "Kill action denied")
             break;
         }
     }
 }
 
 module.exports.autocomplete = async(interaction, Config, Client) => {
-    //Fetch minimal server info for auto complete
-    var data = await MCSS.getServersMinimal();
-    if(data == null){
-        //Api is unreachable
-        interaction.respond([{name: "Unable to connect to MCSS", value: "-1"}]);
-    }else{
-        var servers = [];
-        var value = interaction.options.getFocused(true);
-        //Perform a narrow down search on the servers to only get the ones that match the search
-        await data.forEach(async (server) => {
-            if(server.Name.toLowerCase().includes(value.value.toLowerCase()) || value == ""){
-                servers.push({name: server.Name, value: server.Guid});
-            }
-        });
-        //Give the options back to discord
-        interaction.respond(servers);
-    }
+    commons.serverAutoComplete(interaction);
 }
 
 module.exports.info = new SlashCommandBuilder()

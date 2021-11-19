@@ -9,6 +9,7 @@
 const { SlashCommandBuilder} = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js')
 const MCSS = require('../utils/MCSS API');
+const commons = require('../utils/commons');
 
 module.exports.run = async(interaction, Config, Client) => {
 
@@ -17,7 +18,7 @@ module.exports.run = async(interaction, Config, Client) => {
 
     //Check if the gui is valid (-1 is used for errors)
     if (guid == "-1"){
-        interaction.reply({content: "Unable to connect to MCSS", ephemeral: true});
+        commons.error(interaction, "Unable to connect to MCSS");
     }else{
         var data = await MCSS.getServer(guid);
 
@@ -25,33 +26,17 @@ module.exports.run = async(interaction, Config, Client) => {
         if(data.Status == 1){
             //Restart the server
             await MCSS.executeAction(guid, 3);
-            interaction.reply({content: "Sent restart request to server.", ephemeral: true});
+            commons.success(interaction, `🟡    Restarted ${data.Name}    🟡`);
         }else if (data == null){
-            interaction.respond({content: "Unable to connect to MCSS", ephemeral: true});
+            commons.error(interaction, "Unable to connect to MCSS");
         }else{
-            interaction.reply({content: "Server is not online therefore can not be restarted", ephemeral: true});
+            commons.error(interaction, "Server is not online therefore can not be restarted");
         }
     }
 }
 
 module.exports.autocomplete = async(interaction, Config, Client) => {
-    //Fetch minimal server info for auto complete
-    var data = await MCSS.getServersMinimal();
-    if(data == null){
-        //Api is unreachable
-        interaction.respond([{name: "Unable to connect to MCSS", value: "-1"}]);
-    }else{
-        var servers = [];
-        var value = interaction.options.getFocused(true);
-        //Perform a narrow down search on the servers to only get the ones that match the search
-        await data.forEach(async (server) => {
-            if(server.Name.toLowerCase().includes(value.value.toLowerCase()) || value == ""){
-                servers.push({name: server.Name, value: server.Guid});
-            }
-        });
-        //Give the options back to discord
-        interaction.respond(servers);
-    }
+    commons.serverAutoComplete(interaction);
 }
 
 module.exports.info = new SlashCommandBuilder()

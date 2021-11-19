@@ -9,6 +9,7 @@
 const { SlashCommandBuilder} = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js')
 const MCSS = require('../utils/MCSS API');
+const commons = require('../utils/commons');
 
 module.exports.run = async(interaction, Config, Client) => {
 
@@ -18,9 +19,7 @@ module.exports.run = async(interaction, Config, Client) => {
     var embed = new MessageEmbed()
     if(data == null){
         //Api is unreachable
-        embed.setTitle("Servers")
-        .setColor(0x00AE86)
-        .setDescription(`Unable to connect to MCSS`)
+        commons.error(interaction, "Unable to connect to MCSS");
     }else{
     
         //Resolve some varibles to useable values
@@ -38,7 +37,7 @@ module.exports.run = async(interaction, Config, Client) => {
             embed.addField(`${server.Name}`, 
             `
             **GUID**: \`${server.Guid}\`
-            **Status**: ${status.Emoji}
+            **Status**: \`${status.Message}\` ${status.Emoji}
             `)
         });
     }
