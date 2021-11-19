@@ -110,14 +110,14 @@ module.exports.callButton = async (interaction, Config, Client) => {
     }
 }
 
-module.exports.autocomplete = async (interaction, Config) => {
+module.exports.autocomplete = async (interaction, Config, Client) => {
     var value = interaction.options.getFocused(true);
     var res = []
     switch(value.name){
         case 'command': {
             var commands = await interaction.guild.commands.fetch()
             await Promise.all(commands.map(async (command) => {
-                if(command.name.includes(value.value) || value == ""){
+                if(command.name.toLowerCase().includes(value.value.toLowerCase()) || value == ""){
                     res.push({
                         name: command.name,
                         value: command.id

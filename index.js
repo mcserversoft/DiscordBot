@@ -12,14 +12,25 @@
 const { Client, Collection, Intents } = require('discord.js');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const ConfigHandler = require('./utils/Config Handler');
+const fs = require('fs');
+const yaml = require('js-yaml');
+
+const MCSS = require('./utils/MCSS API');
 
 
 //Init the client with discord.js
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES] });
 
 //Load the config file
-let Config = ConfigHandler.loadConfig();
+let Config = null;
+
+try {
+    let fileContents = fs.readFileSync('./config.yml', 'utf8');
+    Config = yaml.load(fileContents);
+}
+catch (e) {
+    console.log(e);
+}
 
 //Create a collection of commands and commandData
 const commands = new Collection();
@@ -64,18 +75,25 @@ const rest = new REST({ version: '9' }).setToken(Config.Token);
 client.once('ready', async () => {
 	console.log('Ready!');
 
-    //Makes sure the owner always has access to the permission command
-    const command = await client.guilds.cache.get(Config.GuildID)?.commands.fetch(Config.Commands.Perms.ID);
+    var commands = await client.guilds.cache.get(Config.GuildID).commands.fetch()
+    await Promise.all(commands.map(async (command) => {
+        if (command.name == "perms"){
+            var command = await client.guilds.cache.get(Config.GuildID).commands.fetch(command.id);
 
-    const permissions = [
-        {
-            id: Config.OwnerID,
-            type: 'USER',
-            permission: true,
-        },
-    ]
-    
-    await command.permissions.add({ permissions });
+            const permissions = [
+                {
+                    id: Config.OwnerID,
+                    type: 'USER',
+                    permission: true,
+                },
+            ];
+        
+            await command.permissions.add({ permissions });
+        }
+    }))
+
+    console.log("Connecting to MCSS...");
+    MCSS.init(Config.MCSS.username, Config.MCSS.password, Config.MCSS.endpoint, Config.MCSS.port);
 });
 
 //Listen for commands coming from chat and context menus
@@ -133,10 +151,9 @@ client.on('interactionCreate', async interaction => {
 
 	try {
         //Run the autocomplete resolver
-		await command.autocomplete(interaction, Config);
+		await command.autocomplete(interaction, Config, client);
 	} catch (error) {
 		console.error(error);
-		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 	}
 });
 
