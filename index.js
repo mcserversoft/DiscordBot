@@ -19,7 +19,9 @@ const MCSS = require('./utils/MCSS API');
 
 
 //Init the client with discord.js
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES] });
+const client = new Client({
+    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES]
+});
 
 //Load the config file
 let Config = null;
@@ -41,9 +43,9 @@ const commandsData = [];
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
     //Load the file
-	const command = require(`./commands/${file}`);
+    const command = require(`./commands/${file}`);
     //Add to command collection
-	commands.set(command.info.name, command);
+    commands.set(command.info.name, command);
 
     //Load the commandData
     const commandData = require(`./commands/${file}`);
@@ -54,75 +56,89 @@ for (const file of commandFiles) {
 }
 
 //Load the rest API for registering slash commands, auto deals with rate limits
-const rest = new REST({ version: '9' }).setToken(Config.Token);
+const rest = new REST({
+    version: '9'
+}).setToken(Config.Token);
 
 //Send all the slash commandData to the discord API to register the commands for the guild only
 (async () => {
-	try {
-		console.log('Started refreshing application (/) commands.');
+    try {
+        console.log('Started refreshing application (/) commands.');
 
-		await rest.put(
-			Routes.applicationGuildCommands(Config.ClientID, Config.GuildID),
-			{ body: commandsData },
-		);
-		console.log('Successfully reloaded application (/) commands.');
-	} catch (error) {
-		console.error(error);
-	}
+        await rest.put(
+            Routes.applicationGuildCommands(Config.ClientID, Config.GuildID), {
+                body: commandsData
+            },
+        );
+        console.log('Successfully reloaded application (/) commands.');
+    }
+    catch (error) {
+        console.error(error);
+    }
 })();
 
 //All loaded and ready
 client.once('ready', async () => {
-	console.log('Ready!');
+    console.log('Ready!');
 
     var commands = await client.guilds.cache.get(Config.GuildID).commands.fetch()
     await Promise.all(commands.map(async (command) => {
-        if (command.name == "perms"){
+        if (command.name == "perms") {
             var command = await client.guilds.cache.get(Config.GuildID).commands.fetch(command.id);
 
-            const permissions = [
-                {
-                    id: Config.OwnerID,
-                    type: 'USER',
-                    permission: true,
-                },
-            ];
-        
-            await command.permissions.add({ permissions });
+            const permissions = [{
+                id: Config.OwnerID,
+                type: 'USER',
+                permission: true,
+            }, ];
+
+            await command.permissions.add({
+                permissions
+            });
         }
     }))
 
     console.log("Connecting to MCSS...");
-    MCSS.init(Config.MCSS.username, Config.MCSS.password, Config.MCSS.endpoint, Config.MCSS.port);
+    MCSS.init(Config.MCSS.username, Config.MCSS.password, Config.MCSS.endpoint, Config.MCSS.port, Config.MCSS.secure);
 });
 
 //Listen for commands coming from chat and context menus
 client.on('interactionCreate', async interaction => {
-	if (!(interaction.isCommand() || interaction.isContextMenu())) return;
-    if(!interaction.inGuild()){
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true })
+    if (!(interaction.isCommand() || interaction.isContextMenu())) return;
+    if (!interaction.inGuild()) {
+        await interaction.reply({
+            content: 'There was an error while executing this command!',
+            ephemeral: true
+        })
         return;
     }
 
     //Find the commands we want to run
-	const command = commands.get(interaction.commandName);
+    const command = commands.get(interaction.commandName);
 
-	if (!command) return;
+    if (!command) return;
 
-	try {
+    try {
         //Run the command
-		await command.run(interaction, Config, client);
-	} catch (error) {
-		console.error(error);
-		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-	}
+        await command.run(interaction, Config, client);
+    }
+    catch (error) {
+        console.error(error);
+        await interaction.reply({
+            content: 'There was an error while executing this command!',
+            ephemeral: true
+        });
+    }
 });
 
 //Listen for button clicks
 client.on('interactionCreate', async interaction => {
-	if (!(interaction.isButton() || interaction.isSelectMenu())) return;
-    if(!interaction.inGuild()){
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true })
+    if (!(interaction.isButton() || interaction.isSelectMenu())) return;
+    if (!interaction.inGuild()) {
+        await interaction.reply({
+            content: 'There was an error while executing this command!',
+            ephemeral: true
+        })
         return;
     }
 
@@ -131,30 +147,35 @@ client.on('interactionCreate', async interaction => {
 
     if (!command) return;
 
-	try {
+    try {
         //Run the button data
-		await command.callButton(interaction, Config, client);
-	} catch (error) {
-		console.error(error);
-		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-	}
+        await command.callButton(interaction, Config, client);
+    }
+    catch (error) {
+        console.error(error);
+        await interaction.reply({
+            content: 'There was an error while executing this command!',
+            ephemeral: true
+        });
+    }
 });
 
 //Listen for autocomplete
 client.on('interactionCreate', async interaction => {
-	if (!interaction.isAutocomplete()) return;
+    if (!interaction.isAutocomplete()) return;
 
     //Find the commands we want to auto complete for
-	const command = commands.get(interaction.commandName);
+    const command = commands.get(interaction.commandName);
 
     if (!command) return;
 
-	try {
+    try {
         //Run the autocomplete resolver
-		await command.autocomplete(interaction, Config, client);
-	} catch (error) {
-		console.error(error);
-	}
+        await command.autocomplete(interaction, Config, client);
+    }
+    catch (error) {
+        console.error(error);
+    }
 });
 
 //All Good!

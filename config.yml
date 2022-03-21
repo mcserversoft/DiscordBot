@@ -6,4 +6,5 @@ MCSS:
   username: ''
   password: ''
   endpoint: ''
-  port: 0000
+  port: 0
+  secure: false

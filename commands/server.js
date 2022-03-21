@@ -52,24 +52,8 @@ module.exports.run = async(interaction, Config, Client) => {
     }
 }
 
-module.exports.autocomplete = async(interaction, Config, Client) => {
-    //Fetch minimal server info for auto complete
-    var data = await MCSS.getServersMinimal();
-    if(data == null){
-        //Api is unreachable
-        commons.error(interaction, "Unable to connect to MCSS");
-    }else{
-        var servers = [];
-        var value = interaction.options.getFocused(true);
-        //Perform a narrow down search on the servers to only get the ones that match the search
-        await data.forEach(async (server) => {
-            if(server.Name.toLowerCase().includes(value.value.toLowerCase()) || value == ""){
-                servers.push({name: server.Name, value: server.Guid});
-            }
-        });
-        //Give the options back to discord
-        interaction.respond(servers);
-    }
+module.exports.autocomplete = async(interaction) => {
+    commons.serverAutoComplete(interaction);
 }
 
 module.exports.info = new SlashCommandBuilder()
