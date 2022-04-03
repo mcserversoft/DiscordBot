@@ -210,7 +210,6 @@ module.exports.getServer = async (guid) => {
             })
     }
     catch (error) {
-        console.log(error);
         return null;
     }
 
@@ -243,7 +242,6 @@ module.exports.executeAction = async (guid, action) => {
             })
     }
     catch (error) {
-        console.log(error);
         return null;
     }
 
@@ -276,7 +274,6 @@ module.exports.executeCommand = async (guid, command) => {
             })
     }
     catch (error) {
-        console.log(error);
         return null;
     }
 

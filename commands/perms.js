@@ -8,14 +8,8 @@
 
 
 //This manages perms for the commands, you should not need to edit this, if you do contact me on discord
-const {
-    MessageEmbed,
-    MessageActionRow,
-    MessageSelectMenu
-} = require('discord.js')
-const {
-    SlashCommandBuilder
-} = require('@discordjs/builders');
+const { MessageEmbed } = require('discord.js')
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports.run = async (interaction, Config, Client) => {
     switch (interaction.options.getSubcommand()) {
@@ -133,6 +127,11 @@ module.exports.info = new SlashCommandBuilder()
     .addSubcommand(subCommand =>
         subCommand.setName('get')
         .setDescription('Get permissions for a command')
+        .addStringOption(option =>
+            option.setName('command')
+            .setDescription('The command to get the permissions of')
+            .setRequired(true)
+        )
     )
     .addSubcommand(subCommand =>
         subCommand.setName('set')

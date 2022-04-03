@@ -24,7 +24,7 @@ module.exports.run = async(interaction, Config, Client) => {
 
         if(data == null){
             commons.error(interaction, "Unable to connect to MCSS");
-        }else{
+        } else {
 
             //Resolve some varibles to useable values
             var status = await MCSS.resolveStatus(data.Status)
@@ -37,7 +37,7 @@ module.exports.run = async(interaction, Config, Client) => {
             .setDescription(`
             **Guid**: \`${data.Guid}\`
             **Status**: \`${status.Message}\` ${status.Emoji}
-            **Description**: \`${data.Description}\`
+            **Description**: \`${data.Description ? data.Description : ' '}\`
             **Path To Folder**: \`${data.PathToFolder}\`
             **Folder Name**: \`${data.FolderName}\`
             **Creation Date**: \`${data.CreationDate}\`

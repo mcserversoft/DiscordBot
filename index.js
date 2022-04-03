@@ -77,6 +77,12 @@ const rest = new REST({
     }
 })();
 
+//set the default status
+setTimeout(() => {
+    const status = commands.get('status');
+    status.init(Config, client);
+}, 5000)
+
 //All loaded and ready
 client.once('ready', async () => {
     console.log('Ready!');

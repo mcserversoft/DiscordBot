@@ -37,7 +37,7 @@ module.exports.run = async(interaction, Config, Client) => {
     interaction.reply({content: "**Are you sure you wish to do this?**\n\n*Killing a server can have severe consequences!*", components: [row], ephemeral: true })
 }
 
-module.exports.callButton = async(interaction, Config, Client, button) => {
+module.exports.callButton = async(interaction, Config, Client) => {
 
     //Fetch the action and the guid from the custom id
     var action = interaction.customId.split('.')[1]

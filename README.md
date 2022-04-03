@@ -23,10 +23,14 @@ You will need to get a token from [discord's developer portal](https://discord.c
 
 Open the OAuth2 tab, copy the client id and paste it into the `ClientID` field.
 
+Set the `DefaultStatusGuid` value to the guid of the minecraft server you want to be displayed as status by default (leave blank for none)
+You can get the Guid with the /servers command.
+`StatusInterval` is the delay, in seconds, between status updates
 
 Add the MCSS related information (endpoint should be your IP) - Note that if you run MCSS and the bot on the same machine, you can use `localhost` as the endpoint.
 
 If SSL is enabled in the API settings, set `secure` to true
+
 
 You're ready to start using the bot! To do so, type `npm start` and it should work !
 if not feel free to join our [Discord](https://discord.gg/DEn89PB)

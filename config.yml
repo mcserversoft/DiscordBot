@@ -2,6 +2,8 @@ Token: ''
 GuildID: ''
 ClientID: ''
 OwnerID: ''
+DefaultStatusGuid: ''
+StatusInterval: 30
 MCSS:
   username: ''
   password: ''
