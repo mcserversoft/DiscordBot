@@ -123,6 +123,7 @@ module.exports.getVersion = async () => {
             })
     }
     catch (error) {
+        console.log('failed to get version')
         return null;
     }
 
@@ -151,6 +152,7 @@ module.exports.getServersMinimal = async () => {
             })
     }
     catch (error) {
+        console.log('failed to get servers list')
         return null;
     }
 
@@ -179,6 +181,7 @@ module.exports.getServersFull = async () => {
             })
     }
     catch (error) {
+        console.log('failed to get servers list')
         return null;
     }
 
@@ -210,6 +213,7 @@ module.exports.getServer = async (guid) => {
             })
     }
     catch (error) {
+        console.log('failed to get server details')
         return null;
     }
 
@@ -242,6 +246,7 @@ module.exports.executeAction = async (guid, action) => {
             })
     }
     catch (error) {
+        console.log('failed to execute action')
         return null;
     }
 
@@ -274,6 +279,7 @@ module.exports.executeCommand = async (guid, command) => {
             })
     }
     catch (error) {
+        console.log('failed to execute command')
         return null;
     }
 
@@ -302,6 +308,7 @@ module.exports.getServersCount = async () => {
             })
     }
     catch (error) {
+        console.log('failed to get servers count')
         return null;
     }
 
@@ -330,6 +337,7 @@ module.exports.getServersCountOnline = async () => {
             })
     }
     catch (error) {
+        console.log('failed to get servers count')
         return null;
     }
 

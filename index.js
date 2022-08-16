@@ -93,8 +93,8 @@ client.once('ready', async () => {
             var command = await client.guilds.cache.get(Config.GuildID).commands.fetch(command.id);
 
             const permissions = [{
-                id: Config.OwnerID,
-                type: 'USER',
+                id: Config.AdminID,
+                type: 'ROLE',
                 permission: true,
             }, ];
 
