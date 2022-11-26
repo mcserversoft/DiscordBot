@@ -1,5 +1,10 @@
 # MCSS Discord Bot
 
+
+# WARNING : This bot is currently very outdated, both Discord and MCSS have made breaking changes, and IT WILL NOT WORK. As there is almost no demand for it, we haven't spend the time needed to fix it.
+
+
+
 This bot allows you to interact with your MCSS servers remotely. 
 
 This is a simple NodeJs bot, but it requires basic knowledge of NodeJs to get working. 
