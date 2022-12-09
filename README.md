@@ -1,9 +1,6 @@
+# WARNING : This bot is currently very outdated, both Discord and MCSS have made breaking changes, and IT WILL NOT WORK. As there is almost no demand for it, we have yet to spend the time needed to fix it.
+
 # MCSS Discord Bot
-
-
-# WARNING : This bot is currently very outdated, both Discord and MCSS have made breaking changes, and IT WILL NOT WORK. As there is almost no demand for it, we haven't spend the time needed to fix it.
-
-
 
 This bot allows you to interact with your MCSS servers remotely. 
 
